@@ -1,0 +1,783 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+title: "EXO_1_MC"
+output: pdf_document
+
+--- 
+
+\section*{\textbf{\underline{Solution Exercice 1.}}}
+
+
+
+Soit $f$ une densité de $\mathbb{R}^2$ définie pour $(x,y) \in \mathbb{R}^2$ par $f(x,y)=a\psi(x,y)$ avec $a \in \mathbb{R}_+^*$ et 
+\begin{center} $\psi(x,y) = [|sin(\frac{2}{\pi}x^2-\frac{\pi}{4})|+4cos(x)^2+y^4]e^{-2(x+|y|)}\mathbf{1}_{\{x \in [-\frac{\pi}{2},\frac{\pi}{2}]\}}\mathbf{1}_{\{y \in [-1,1]\}}$\end{center}
+Pour $(X,Y)$ de densité $f$, l'objectif est d'estimer $f_X$ la densité marginale de $X$.  
+ 
+ 
+ 
+
+\subsection*{\textsl{Simulation suivant la densité $f$}} 
+
+
+
+
+\textbf{1.}  
+
+
+On va montrer que pour simuler suivant $f$, il n'est pas nécessaire de connaître $a$ et il suffit de trouver une constant $m \in \mathbb{R}_+^*$ et une densité $g$ telles que 
+\begin{center} $\forall (x,y) \in \mathbb{R}^2$, \; $\psi(x,y) \leq mg(x,y)$ \; \; (1)\end{center}
+Or $\psi(x,y)=\frac{f(x,y)}{a}$  . \; Alors on remarque dans un premier temps que  
+\begin{center} $\psi(x,y) \leq mg(x,y) \Leftrightarrow f(x,y) \leq Mg(x,y) $ \; avec $M=am$ et $a \in \mathbb{R}_+^*$\end{center}
+De plus, afin d'appliquer l'algorithme du rejet à $\psi$, on pose 
+\begin{center} $T=inf\{n\geq1, \; U_n \leq \frac{\psi(X_n,Y_n)}{mg(X_n,Y_n)}\}$ \; avec $(U_n)_{n\geq1} \overset{iid}{\sim} \mathcal{U}([0,1])$ et $((X_n,Y_n))_{n\geq1} \overset{iid}{\sim} g$ \\\end{center} \\
+On a alors, par $\psi(x,y)=\frac{f(x,y)}{a}$ , $T=inf\{n\geq1, \; U_n \leq \frac{f(X_n,Y_n)}{Mg(X_n,Y_n)}\}$  
+On en déduit que $T$ est bien un temps d’arrêt pour la fonction $f$ et donc $(X_T,Y_T)$ suit bien la loi de densité $f$.  
+Pour conclure, l'algorithme du rejet appliqué à $\psi$ permet bien de simuler suivant $f$.  
+
+Ainsi, nous cherchons $g$ une densité de $\mathbb{R}^2$ pour laquelle on dispose d'un générateur aléatoire telle qu'il existe une constante $m \geq 1$ satisfaisant (1).   
+Tout d'abord, nous allons majorer $ C(x,y)= |sin(\frac{2}{\pi}x^2-\frac{\pi}{4})|+4cos(x)^2+y^4]$ par une constante.  
+On a, \, $\forall (x,y) \in [-\frac{\pi}{2},\frac{\pi}{2}]\times[-1,1]$ \,: 
+\begin{itemize}
+\item  $|sin(\frac{2}{\pi}x^2-\frac{\pi}{4})| \leq \frac{\sqrt(2)}{2} $
+\item  $4cos(x)^2 \leq 4$
+\item  $y^4 \leq 1$
+\end{itemize}
+Donc \, $C(x,y) \leq (5+\frac{\sqrt{2}}{2})$ \, $\forall (x,y) \in [-\frac{\pi}{2},\frac{\pi}{2}]\times[-1,1]$  
+
+
+\textbf{Choix 1}
+ 
+On choisit $g\overset{iid}{\sim} \mathcal(U)([-\frac{\pi}{2},\frac{\pi}{2}])\times\mathcal(U)([-1,1])$    
+\; et ainsi \; $g(x,y) = \frac{1}{2\pi}\mathbf{1}_{\{x \in [-\frac{\pi}{2},\frac{\pi}{2}]\}} \mathbf{1}_{\{y \in [-1,1]\}}$  
+On a donc $\psi(x,y) = C(x,y)exp(-2(x+|y|))2\pi g(x,y)$  
+Or \, $\forall (x,y) \in [-\frac{\pi}{2},\frac{\pi}{2}]\times[-1,1]$ \, : 
+\begin{itemize}
+\item  $exp(-2x) \leq exp(\pi) $
+\item  $exp(-2|y|) \leq 1$
+\end{itemize}
+Ainsi, en posant $m =  (5+\frac{\sqrt{2}}{2})exp(\pi)$ on a bien $\psi(x,y) \leq mg(x,y)$ 
+ 
+
+\begin{center} \textbf{!!A COMMENTER POUR CHANGEMENT DE CHOIX !!} \end{center}
+
+\textbf{Choix 2}
+ 
+
+On choisit $g(x,y)=g_1(x)g_2(y)$ avec 
+
+
+\begin{itemize}
+\item  $g_1(x) =  \frac{2e^{-2x}}{e^{\pi}-e^{-\pi}}\mathbf{1}_{\{x \in [-\frac{\pi}{2},\frac{\pi}{2}]\}} \quad avec \quad \frac{(e^{\pi}-e^{-\pi})}{2}= \displaystyle \int_{\mathbb{R}} e^{-2x}\mathbf{1}_{\{x \in [-\frac{\pi}{2},\frac{\pi}{2}]\}} \, \mathrm{d}x $
+\item  $g_2(y) = \frac{e^{-2|y|}}{1-e^{-2}}\mathbf{1}_{\{y \in [-1,1]\}} \quad avec \quad (1-e^{-2})= \displaystyle \int_{\mathbb{R}} e^{-2|y|}\mathbf{1}_{\{y \in [-1,1\}}  \, \mathrm{d}y$
+\end{itemize} 
+
+
+
+On a donc $\psi(x,y) = C(x,y)(1-e^{-2})(e^{\pi}-e^{-\pi})\frac{1}{2} g(x,y)$  
+Ainsi en posant $m=(5+\frac{\sqrt{2}}{2})(1-e^{-2})(e^{\pi}-e^{-\pi})\frac{1}{2}$  on a bien $\psi(x,y) \leq mg(x,y)$ 
+ 
+
+
+
+
+
+ \textbf{2.}  
+
+
+ 
+Nous utilisons notre \textbf{Choix 2} et donc  $g(x,y)=g_1(x)g_2(y)$ avec 
+
+
+
+\begin{itemize}
+\item  $g_1(x) =  \frac{2e^{-2x}}{e^{\pi}-e^{-\pi}}\mathbf{1}_{\{x \in [-\frac{\pi}{2},\frac{\pi}{2}]\}} $
+\item  $g_2(y) = \frac{e^{-2|y|}}{1-e^{-2}}\mathbf{1}_{\{y \in [-1,1]\}}$
+\end{itemize} 
+
+
+
+Ainsi, pour simuler suivant la densité $g$ nous utilisons la méthode de la fonction inverse. 
+En effet, on note $F_1$ et $F_2$ les fonctions de répartition respectives de $g_1$ et $g_2$ et on a 
+
+\begin{tabular}{r l c r l }
+& & & & \\ 
+$F_1(x) = $ & 
+\[
+\left\{
+\begin{array}{l}
+1 \; si \; x > \frac{\pi}{2} \\
+\\
+0 \;  si \;  x < -\frac{\pi}{2} \\
+\\
+\frac{e^{\pi}-e^{-2x}}{e^{\pi}-e^{-\pi}} \; si \; x \in [-\frac{\pi}{2},\frac{\pi}{2}]\\ 
+\end{array} 
+\right.
+\]
+ & \; et \; & $F_2(y) = $ & 
+\[
+\left\{
+\begin{array}{l}
+1 \; si \; y > 1 \\
+\\
+0 \;  si \;  y < -1 \\
+\\
+\frac{e^{2y}-e^{-2}}{2(1-e^{-2})} \; si \; y \in [-1,0]\\ 
+\\
+\frac{1-e^{-2y}}{2(1-e^{-2})} + \frac{1}{2} \; si \; y \in [0,1]\\ 
+\end{array} 
+\right.
+\] \\
+& & & & \\ 
+\end{tabular} 
+
+Ces deux fonctions de répartition étant continues et strictement croissantes nous avons $F_1^{\leftarrow}=F_1^{-1}$ et $F_2^{\leftarrow}=F_2^{-1}$ ce qui nous donne 
+\begin{tabular}{l c l }
+&  & \\ 
+$F_1^{\leftarrow}(x) = -\frac{1}{2}(ln(1-x(1-e^{-2\pi}))+\pi)$ 
+
+ & \; et \; & $F_2^{\leftarrow}(y) = \frac{ln(2y(1-e^{-2})+e^{-2}}{2}\mathbf{1}_{y \in [0,\frac{1}{2}]} -\frac{ln(2y-1)(1-e^{-2}}{2}\mathbf{1}_{y \in [\frac{1}{2},1]} $ \\
+&  & \\ 
+\end{tabular}
+
+
+\subsection*{\textsl{Méthode n°1 – Estimation de a}} 
+
+
+ \textbf{4. (a)}  
+
+
+Nous avons dans un premier temps  	
+\begin{center}$\mathbb{E}_g[\rho(X,Y)] = \displaystyle \int_{\mathbb{R}^2} \rho(x,y)g(x,y) \, \mathrm{d}x \, \mathrm{d}y = \frac{1}{m}\displaystyle \int_{\mathbb{R}^2} \psi(x,y) \, \mathrm{d}x \, \mathrm{d}y$  \end{center}
+
+
+Or, $f(x,y)=a\psi(x,y)$ où $f$ est une densité d'où $\displaystyle \int_{\mathbb{R}^2} \psi(x,y) \, \mathrm{d}x \,\mathrm{d}y = \frac{1}{a} $ .
+ 
+
+Ainsi
+\begin{center} $\mathbb{E}[\rho(X,Y)]= \frac{1}{ma} $ avec $(X,Y) \sim g$ \end{center}
+
+On en déduit l'estimateur classique de Monte Carlo de $\frac{1}{a}$, 
+
+\begin{center} 
+$ \widehat{\delta}_n = \frac{1}{n}\sum_{i=1}^{n}m\rho(X_i,Y_i)$ \quad avec $(X_i,Y_i)\overset{iid}{\sim} g$ \end{center}
+
+Donc nous prenons   
+\begin{center} 
+\fcolorbox{black}{white}{$ \widehat{b}_n = \frac{1}{\widehat{\delta}_n} = \frac{1}{\frac{1}{n}\sum_{i=1}^{n}m\rho(X_i,Y_i)} $} \quad avec $(X_i,Y_i)\overset{iid}{\sim} g$
+\end{center}
+
+
+
+
+
+
+\textbf{Biais de l'estimateur.} \: Comme la fonction $x \mapsto \frac{1}{x}$ est convexe sur $\mathbb{R}^*_+$ , par l'inégalité de Jensen : 
+\begin{center}$\mathbb{E}[\widehat{b}_n] = \mathbb{E}[\frac{1}{\widehat{\delta}_n}] \geq \frac{1}{\mathbb{E}[\widehat{\delta}_n]} $ \end{center}
+De plus, les variables aléatoires $(m\rho(X_n,Y_n))_{n\geq1}$ étant identiquement distribuées, on a : 
+\begin{center} $\mathbb{E}[\widehat{\delta}_n] = \mathbb{E}_g[m\rho(X_1,Y_1)] = \frac{1}{a}$ \end{center} 
+Donc  $\mathbb{E}[\widehat{b}_n] \geq a$ , \,on obtient que l'estimateur est biaisé.
+
+
+\textbf{Convergence de l'estimateur.} \:  Les variables aléatoires $(m\rho(X_n,Y_n))_{n\geq1}$ sont \textit{i.i.d.} et d'espérance finie sous $g$.
+La loi forte des grands nombres donne $ \widehat{\delta}_n \overset{p.s}{\underset{n\rightarrow +\infty}{\longrightarrow}} \mathbb{E}_g[m\rho(X_1,Y_1)] = \frac{1}{a} $ 
+ 
+D'où, par continuité de  $x \mapsto \frac{1}{x}$, on a $ \widehat{b}_n \overset{p.s}{\underset{n\rightarrow +\infty}{\longrightarrow}} a $
+  
+
+\textbf{Intervalle de confiance.} \:  Les variables aléatoires $(m\rho(X_n,Y_n))_{n\geq1}$ sont \textit{i.i.d.} et
+de variance finie ($\rho$ étant de carré intégrable par rapport à g). Le théorème centrale limite donne 
+
+\begin{center} $\sqrt{n}(\widehat{\delta}_n - \frac{1}{a}) \overset{\mathcal{L}}{\underset{n\rightarrow +\infty}{\longrightarrow}} \mathcal{N}(0,\sigma^2) $  \end{center} 
+
+D'après la Méthode Delta pour $h: x \mapsto \frac{1}{x}$, on obtient 
+
+\begin{center} $\sqrt{n}(\widehat{b}_n - a) \overset{\mathcal{L}}{\underset{n\rightarrow +\infty}{\longrightarrow}} \mathcal{N}(0,\sigma^2a^4) $ \, car $h'(x)=-\frac{1}{x^2}$\end{center}
+On en déduit l’intervalle de confiance de $a$ au niveau de confiance $1 - \alpha$, 
+\begin{tabular}{r l} 
+& \\
+$IC_{1-\alpha}$ & $= [\,\widehat{b}_n - q_{1-\frac{\alpha}{2}}\sqrt{\frac{\sigma^2a^4}{n}} , \widehat{b}_n) + q_{1-\frac{\alpha}{2}}\sqrt{\frac{\sigma^2a^4}{n}}\,]$ \\ 
+& \\ 
+& $= [\,\widehat{b}_n - q_{1-\frac{\alpha}{2}}\sqrt{Var[\widehat{b}_n]a^4} , \widehat{b}_n + q_{1-\frac{\alpha}{2}}\sqrt{Var[\widehat{b}_n]a^4} \,]$ \\  
+& \\
+\end{tabular} 
+
+où $q_{1-\frac{\alpha}{2}}$ est le quantile d’ordre $1-\frac{\alpha}{2}$ de la loi normale centrée réduite.  Dans la pratique, on estime la variance $σ^2$ via la variance empirique associée aux réalisations de la variable aléatoire $(m\rho(X_n,Y_n))_{n\geq1}$ : 
+
+\begin{center} $\widehat{\sigma}_n^2=\frac{1}{n}\sum_{k=1}^{n}\{m\rho(X_k,Y_k) - \widehat{b}_n \}^2$  \end{center}
+Et on estime $a^4$ avec $\widehat{b}_n^4$ \, par la loi forte des grands nombres et le théorème de Slutsky.  
+Finalement,
+\begin{center} $IC_{1-\alpha} = [\,\widehat{b}_n - q_{1-\frac{\alpha}{2}}\widehat{b}_n^2\sqrt{\frac{\widehat{\sigma}_n^2}{n}} , \widehat{b}_n + q_{1-\frac{\alpha}{2}}\widehat{b}_n^2\sqrt{\frac{\widehat{\sigma}_n^2}{n}}\,]$\end{center} 
+
+
+
+
+
+ \textbf{4. (b)}  
+
+
+
+
+ \textbf{4. (c)}  
+
+Afin d'estimer le biais de l'estimateur $\widehat{b}_n$ nous utilisons une methode \textit{Bootsrtap}  
+En effet, on génére $K$ estimateurs de $K$ échantillons de taille 1000 aléatoirement tirés parmi l'échantillon des valeurs de $\rho(x,y)$ afin d'estimer l'espérance de $\widehat{b}_n$ par la méthode de monte carlo classique : $\frac{1}{K} \sum_{k=1}^{K}\widehat{b}_n^{(k)}$ .  
+Notre estimation du biais est alors 
+\begin{center} \fbox{$\widehat{B}(\widehat{b}_n,a) = ( \, \frac{1}{K} \sum_{k=1}^{K}\widehat{b}_n^{(k)} \,) - \widehat{b}_n$} \end{center}
+
+
+
+
+ \textbf{5. (a)}  
+
+
+
+Nous avons dans un premier temps 
+\begin{tabular}{r l l}
+& \\ 
+$\mathbb{E}_f[\frac{g(X,Y)}{\psi(X,Y)}]$ & $=\displaystyle \int_{\mathbb{R}^2} \frac{g(x,y)}{\psi(x,y)}f(x,y) \, \mathrm{d}x \, \mathrm{d}y$ & \\
+&  & \\ 
+& $=\displaystyle \int_{\mathbb{R}^2} g(x,y)a \, \mathrm{d}x \, \mathrm{d}y $ & car $\frac{f(x,y)}{\psi(x,y)}=a$ \\
+& & \\ 
+& $=a$ & car $g$ est une densité donc  $\displaystyle \int_{\mathbb{R}^2} g(x,y) \, \mathrm{d}x \, \mathrm{d}y = 1$
+& & \\
+\end{tabular}  
+De plus \, $\frac{g(X,Y)}{\psi(X,Y)}=\frac{1}{m\rho(X,Y)}$ \, et ainsi \, $\mathbb{E}_f[\frac{1}{m\rho(X,Y)}] = a$  
+On en déduit l'estimateur classique de Monte Carlo de a, 
+\begin{center} 
+\fcolorbox{black}{white}{$ \widehat{a}_n = \frac{1}{n}\sum_{i=1}^{n}\frac{1}{m\rho(X_i,Y_i)} $} \quad avec $(X_i,Y_i)\overset{iid}{\sim} f$
+\end{center}
+ 
+
+\textbf{Biais de l'estimateur.} \: Les variables aléatoires $(\frac{1}{m\rho(X_n,Y_n)})_{n\geq1}$ étant identiquement distribuées, on a : 
+\begin{center} $\mathbb{E}[\widehat{a}_n] = \mathbb{E}_f[\frac{1}{m\rho(X_1,Y_1)}] = a$ \end{center} 
+L'estimateur est donc sans biais. 
+
+
+\textbf{Convergence de l'estimateur.} \:  Les variables aléatoires $(\frac{1}{m\rho(X_n,Y_n)})_{n\geq1}$ sont \textit{i.i.d.} et d'espérance finie sous $f$.
+La loi forte des grands nombres donne $ \widehat{a}_n \overset{p.s}{\underset{n\rightarrow +\infty}{\longrightarrow}} \mathbb{E}_f[\frac{1}{m\rho(X_1,Y_1)}] = a $ .
+ 
+Donc  $ \widehat{a}_n \overset{p.s}{\underset{n\rightarrow +\infty}{\longrightarrow}} a $
+  
+
+
+\textbf{Intervalle de confiance.} \:  Les variables aléatoires $(\frac{1}{m\rho(X_n,Y_n)})_{n\geq1}$ sont \textit{i.i.d.} et de variance finie. Le théorème centrale limite donne 
+
+\begin{center} $\sqrt{n}(\widehat{a}_n - a) \overset{\mathcal{L}}{\underset{n\rightarrow +\infty}{\longrightarrow}} \mathcal{N}(0,\sigma^2)  $  \; avec $\sigma^2 = Var[\frac{1}{m\rho(X_1,Y_1)})]$ \end{center} 
+
+On en déduit l’intervalle de confiance de $a$ au niveau de confiance $1 - \alpha$, 
+
+\begin{tabular}{r l} 
+& \\
+$IC_{1-\alpha}$ & $= [\,\widehat{a}_n - q_{1-\frac{\alpha}{2}}\sqrt{\frac{\sigma^2}{n}} , \widehat{a}_n + q_{1-\frac{\alpha}{2}}\sqrt{\frac{\sigma^2}{n}}\,]$ \\
+& \\
+& $= [\,\widehat{a}_n - q_{1-\frac{\alpha}{2}}\sqrt{Var[\widehat{a}_n]} , \widehat{a}_n + q_{1-\frac{\alpha}{2}}\sqrt{Var[\widehat{a}_n]} \,]$  \\ 
+& \\
+\end{tabular} 
+
+où $q_{1-\frac{\alpha}{2}}$ est le quantile d’ordre $1-\frac{\alpha}{2}$ de la loi normale centrée réduite.  Dans la pratique, on estime la variance $σ^2$ via la variance empirique associée aux réalisations de la variable aléatoire $(\frac{1}{m\rho(X_n,Y_n)})_{n\geq1}$ : 
+
+\begin{center} $\widehat{\sigma}_n^2=\frac{1}{n}\sum_{k=1}^{n}\{\frac{1}{m\rho(X_k,Y_k)}- \widehat{a}_n \}^2$  \end{center} 
+
+
+
+
+
+
+ \textbf{7. (a)}  
+
+Soit $x \in [-\frac{\pi}{2},\frac{\pi}{2}]$, alors 
+\begin{center}$\psi(x,y) = [|sin(\frac{2}{\pi}x^2-\frac{\pi}{4})|+4cos(x)^2+y^4]e^{-2(x+|y|)}\mathbf{1}_{\{y \in [-1,1]\}}$ \end{center}
+
+De plus, \; $f(x,y)=a\psi(x,y) \Rightarrow f_X(x)=a\displaystyle \int_{\mathbb{R}} \psi(x,y) \, \mathrm{d}y$  
+  
+  
+\begin{tabular}{l r l}
+Et & $\displaystyle \int_{\mathbb{R}} \psi(x,y) \, \mathrm{d}y$ & $= \displaystyle \int_{[-1,1]} [|sin(\frac{2}{\pi}x^2-\frac{\pi}{4})|+4cos(x)^2+y^4]e^{-2(x+|y|)} \, \mathrm{d}y $ \\
+& & \\
+& & $=e^{-2x}[[|sin(\frac{2}{\pi}x^2-\frac{\pi}{4})|+4cos(x)^2]\frac{e^2-1}{e^2} + \displaystyle \int_{[-1,1]} y^4e^{-2|y|} \, \mathrm{d}y]$ \\
+& & \\
+& & \\
+\end{tabular}
+
+
+ 
+Avec \; \; $\displaystyle \int_{[-1,1]} y^4e^{-2|y|} \, \mathrm{d}y = 2\displaystyle \int_{[-1,0]} y^4e^{2y} \, \mathrm{d}y =  \frac{3(e^2-7)}{4e^2}$ \;
+par des intégrations par parties successives.   
+
+Ainsi, 
+
+\begin{center} $\displaystyle \int_{\mathbb{R}} \psi(x,y) \, \mathrm{d}y = e^{-2x}[[|sin(\frac{2}{\pi}x^2-\frac{\pi}{4})|+4cos(x)^2]\frac{e^2-1}{e^2} + \frac{3(e^2-7)}{4e^2} ]  $  \end{center}    
+
+On en déduit alors la densité marginale de X 
+
+\begin{center} $f_X(x) = a.e^{-2x}[[|sin(\frac{2}{\pi}x^2-\frac{\pi}{4})|+4cos(x)^2]\frac{e^2-1}{e^2} + \frac{3(e^2-7)}{4e^2} ]  $  \end{center}  
+
+Finalement, par le théorème de Slutsky, comme $ \widehat{a}_n \overset{p.s}{\underset{n\rightarrow +\infty}{\longrightarrow}} a $, on prend
+\begin{center} \fcolorbox{black}{white}{ $\widehat{f}_{X,n}(x) = \widehat{a}_n.e^{-2x}[[|sin(\frac{2}{\pi}x^2-\frac{\pi}{4})|+4cos(x)^2]\frac{e^2-1}{e^2} + \frac{3(e^2-7)}{4e^2} ]$ }  \; avec $\widehat{f}_{X,n}(x) \overset{p.s}{\underset{n\rightarrow +\infty}{\longrightarrow}} f_X(x) 
+$ \end{center}
+
+
+
+
+
+
+\begin{center}   \end{center}
+\subsection*{\textsl{Méthode n°2 – Estimateur ponctuel}} 
+ \textbf{8.}  
+ 
+Soient $(X_1,Y_1),...,(X_n,Y_n)$ une suite de variables indépendantes suivant la loi jointe $f_{X,Y}(x,y)$ et $\omega(.)$ une densité quelconque.  
+On note \; $\widehat{\omega}_n(t)=\frac{1}{n}\sum_{k=1}^{n}\frac{\psi(t,Y_k)\omega(X_k)}{\psi(X_k,Y_k)}$ 
+
+La loi forte des grands nombres pour la suite de variables aléatoires \textit{i.i.d.} $(\frac{\psi(t,Y_n)\omega(X_n)}{\psi(X_n,Y_n)})_{n \geq 1}$ nous donne 
+
+\begin{center}  $\widehat{\omega}_n(t)  \overset{p.s}{\underset{n\rightarrow +\infty}{\longrightarrow}} \mathbb{E}[\frac{\psi(t,Y_1)\omega(X_1)}{\psi(X_1,Y_1)}]$  \end{center}
+
+De plus, 
+
+\begin{tabular}{r l l}
+& & \\
+$\mathbb{E}[\frac{\psi(t,Y_1)\omega(X_1)}{\psi(X_1,Y_1)}]$ & $=\displaystyle \int_{supp(f_{X,Y})} \frac{\psi(t,y)\omega(x)}{\psi(x,y)}f_{X,Y}(x,y) \, \mathrm{d}x \mathrm{d}y$ & \\
+& & \\
+& $= \displaystyle \int_{supp(f_{X,Y})} \frac{af_{X,Y}(t,y)\omega(x)}{af_{X,Y}(x,y)}f_{X,Y}(x,y) \, \mathrm{d}x \mathrm{d}y$ & car $\psi(x,y) = \frac{f_{X,Y}(x,y)}{a}$ \\
+& & \\ 
+& $= \displaystyle \int_{supp(f_{X,Y})} \omega(x)f_{X,Y}(x,y) \, \mathrm{d}x \mathrm{d}y$ & \\
+& & \\ 
+& $= \displaystyle \int_{supp(f_Y)} f_{X,Y}(x,y) (\underset{=1}{\underbrace{\displaystyle \int_{supp(f_X)} \omega(x) \, \mathrm{d}x}} ) \mathrm{d}y $ & d'aprés le théorème de Fubini \\
+& & \\
+& $= \displaystyle \int_{supp(f_Y)} f_{X,Y}(x,y) \, \mathrm{d}y $ & car $\omega(.)$ est une densité et $supp(\omega) \subseteq supp(f_x) $ \\
+& & \\ 
+& $= f_X(t)$ & \\
+& & \\
+\end{tabular}
+
+Ainsi, on a bien montré que 
+
+\begin{center} \fcolorbox{black}{white}{ $\widehat{\omega}_n(t)  \overset{p.s}{\underset{n\rightarrow +\infty}{\longrightarrow}} f_X(t)$  }  \end{center}
+
+\textbf{Intervalle de confiance.} \:  Les variables aléatoires $(\frac{\psi(t,Y_n)\omega(X_n)}{\psi(X_n,Y_n)})_{n \geq 1}$ sont \textit{i.i.d.} et de variance finie. Le théorème centrale limite donne 
+
+\begin{center} $\sqrt{n}(\widehat{\omega}_n(t) - f_X(t)) \overset{\mathcal{L}}{\underset{n\rightarrow +\infty}{\longrightarrow}} \mathcal{N}(0,\sigma^2)  $  \; avec $\sigma^2 = Var[\frac{\psi(t,Y_1)\omega(X_1)}{\psi(X_1,Y_1)}]$ \end{center} 
+
+On en déduit l’intervalle de confiance de $f_X(t)$ au niveau de confiance $1 - \alpha$, 
+
+\begin{tabular}{r l} 
+& \\
+$IC_{1-\alpha}$ & $= [\,\widehat{\omega}_n(t) - q_{1-\frac{\alpha}{2}}\sqrt{\frac{\sigma^2}{n}} , \widehat{\omega}_n(t) + q_{1-\frac{\alpha}{2}}\sqrt{\frac{\sigma^2}{n}}\,]$ \\
+& \\
+& $= [\,\widehat{\omega}_n(t) - q_{1-\frac{\alpha}{2}}\sqrt{Var[\widehat{\omega}_n(t)]} , \widehat{\omega}_n(t) + q_{1-\frac{\alpha}{2}}\sqrt{Var[\widehat{\omega}_n(t)]} \,]$  \\ 
+& \\
+\end{tabular} 
+
+où $q_{1-\frac{\alpha}{2}}$ est le quantile d’ordre $1-\frac{\alpha}{2}$ de la loi normale centrée réduite.  Dans la pratique, on estime la variance $σ^2$ via la variance empirique associée aux réalisations de la variable aléatoire $(\frac{\psi(t,Y_n)\omega(X_n)}{\psi(X_n,Y_n)})_{n \geq 1}$ : 
+
+\begin{center} $\widehat{\sigma}_n^2(t)=\frac{1}{n}\sum_{k=1}^{n}\{\frac{\psi(t,Y_k)\omega(X_k)}{\psi(X_k,Y_k)} - \widehat{\omega}_n(t) \}^2$  \end{center} 
+
+
+
+
+
+ \textbf{9.}  
+ 
+
+On sait que $\psi(x,y)=\frac{f(x,y)}{a}$. De plus, les variables aléatoires $X$ et $Y$ sont indépendantes donc $f_{X,Y}(x,y)=f_X(x)f_Y(y)$. Ainsi, on a  
+\begin{center}    $\widehat{\omega}_n(t) = \frac{1}{n}\sum_{k=1}^{n}\frac{f_X(t)f_Y(Y_k)\omega(X_k)}{f_X(X_k)f_Y(Y_k)} = \frac{1}{n}\sum_{k=1}^{n}\frac{f_X(t)\omega(X_k)}{f_X(X_k)}$   \end{center}
+Nous cherchons la densité $\omega(.)$ qui minimise la variance de $\widehat{\omega}_n(t)$. Or 
+\begin{tabular}{r l c}
+&  & \\
+$\underset{\omega(.)}{min} \, (Var[\widehat{\omega}_n(t)])$ & $\iff \underset{\omega(.)}{min} \, ( \frac{f_X(t)^2}{n} Var[\frac{\omega(X_1)}{f_X(X_1)}])$ & \; car les v.a. $(\frac{\omega(X_n)}{f_X(X_n)})_{n \geq 1}$ sont \textit{i.i.d.} \\
+& & \\
+& $\iff \underset{\omega(.)}{min} \,  (\mathbb{E}[(\frac{f_X(t)\omega(X_1)}{f_X(X_1)})^2] - \mathbb{E}[(\frac{f_X(t)\omega(X_1)}{f_X(X_1)})]^2)$ & \\
+& & \\ 
+& $\iff \underset{\omega(.)}{min} \,  (\displaystyle \int_{supp(f_X)} \frac{\omega(x)^2}{f_X(x)} \, \mathrm{d}x - [\underset{=1}{\underbrace{\displaystyle \int_{supp(f_X)} \omega(x) \, \mathrm{d}x}}]^2)$ & \\ 
+& & \\ 
+& $ \iff \underset{\omega(.)}{min} \,  (\displaystyle \int_{supp(f_X)} \frac{\omega(x)^2}{f_X(x)} \, \mathrm{d}x - 1) $ & \\
+& & \\
+& & \\
+\end{tabular}
+Or \; $(\displaystyle \int_{supp(f_X)} \frac{\omega(x)^2}{f_X(x)} \, \mathrm{d}x - 1) = Var[\frac{\omega(X_1)}{f_X(X_1)}] \, \geq 0 $  
+Ainsi chercher une densité $\omega(.)$ qui minimise la variance de $\widehat{\omega}_n(t)$ revient à chercher une densité $\omega(.)$ pour laquelle $\displaystyle \int_{supp(f_X)} \frac{\omega(x)^2}{f_X(x)} \, \mathrm{d}x = 1$ .  
+On remarque alors qu'un choix évident est : 
+\begin{center} \fbox{ $\omega(.) = f_X(.)$} \end{center} 
+
+Cependant, $f_X$ est la densité que nous cherchons à estimer, nous ne pouvons donc l'utiliser.  
+Dans la pratique, nous utiliserons alors l'estimateur de $f_X$ construit précédemment, à savoir $\widehat{f}_{X,n}(x)$ qui converge presque-sûrement vers $f_X$.
+
+
+
+
+
+
+
+\section*{\textbf{\underline{Solution Exercice 2.}}}
+
+      
+Soit $X=(X_1,X_2,X_3)$ un vecteur aléatoire de $\mathbb{R}^3$ distribué suivant la loi $\mathcal{N}(\mu,\Sigma)$ avec 
+MATRICE
+On s'intéresse à 
+\begin{center} $\delta=\mathbb{E} [min (3,  \frac{1}{3}  \sum_{i=1}^{n} e^{-X_k})]$ \end{center} 
+
+
+\textbf{1.}  
+
+
+Pour simuler la loi de $X$ on code une fonction $rmvnorm(n,mu,sigma)$ qui permet de générer $n$ simulations de la loi normale multivariée de moyenne $mu$ et de matrice de vriance-covariance $sigma$.  
+Cette fonction repose sur la proposition suivante du cours : 
+ 
+
+ Soit $\mathcal{Z}\sim\mathcal{N}(0_3,I_3)$ 
+On utilise la décomposition de Cholesky de $\Sigma$ i.e. $\Sigma=LL^T$ avec $L$ une matrice triangualire inférieure.  
+Ainsi $X=\mu+L\mathcal{Z}$ avec $\mu \in \mathbb{R}^3$ suit la loi $\mathcal{N}(\mu,\Sigma)$  
+
+```{r}
+rmvnorm <- function(n, mu, sigma) { # Simulation de X
+  Z <- matrix(rnorm(3 * n), nrow = 3, ncol = n)
+  X <- t(chol(sigma))
+  return(mu + X %*% Z)
+}
+
+# On utilise les données de l'exercice pour simuler 10000 simulations de X
+n <- 10000
+mu <- c(0.1, 0, 0.1)
+sigma <- matrix(c(0.047, 0, 0.0117, 0, 0.047, 0, 0.0117, 0, 0.047), 3, 3)
+
+x <- rmvnorm(n, mu, sigma)
+```
+
+
+
+\textbf{2. (a)}  
+
+ 
+$\delta=\mathbb{E} [min (3,  \frac{1}{3}  \sum_{i=1}^{n} e^{-X_k} )]$.
+On calcule l'estimateur de Monte-Carlo classqiue en simulant $n$ variables aléatoires $(X_i)_{i \in [1,n]}=((X_{1,i},X_{2,i},X_{3,i}))_{i \in [1,n]}$ \, \textit{i.i.d.} suivant la loi de $X$.  
+\begin{center} \fbox{$\widehat{\delta}_n=\frac{1}{n} \sum_{i=1}^n min (3,  \frac{1}{3}  \sum_{i=1}^{n} e^{-X_k} )$  }\end{center}
+
+
+\textbf{2. (b)}  
+ On utilise les $n$ simulations de la question 1.  
+On code une fonction $h(x,n)$ qui prend en arguments un vecteur $(X_i)_{i \in [1,n]}$ de taille $n$ et renvoie un vecteur $(h(X_i))_{i \in [1,n]}$ où $h(X)=min (3,  \frac{1}{3}  \sum_{i=1}^{n} e^{-X_k} )$ . 
+On utilise la fonction $pmin$, qui nous permet de retourner le minimum de deux vecteurs, afin d'optimiser l'efficacité de la fonction.  
+Pour calculer l'erreur quadratique moyenne, on utilise la formule $\frac{Var[h(X)]}{n}$ et la fonction $var(.)$ qui retourne la variance empirique.
+ 
+```{r}
+h <- function(x, n) { # Fonction h utilisant pmin pour prendre le min de 2 vecteurs
+  return(pmin(rep(3, n), colMeans(exp(-x))))
+}
+
+h.x <- h(x, n)
+delta <- mean(h.x)
+
+var.h <- var(h.x)
+erreur <- var.h / n
+erreur
+```
+
+
+\textbf{3. (a)}  
+
+On prend $A(X)=2\mu-X$ qui est mesurable.
+Ainsi, $A(x)$ suit la même loi que $X$. GRAPHE  
+On construit l'estimateur $\widehat{\delta}_n$ par la méthode antithétique : 
+\begin{center} $\widehat{\delta}_n = \frac{1}{n} \sum_{i=1}^{n}\frac{h(X_i)+h(A(X_i))}{2}$ \; où $(X_i)_{i \in [1,n]}$ est une suite de v.a \textit{i.i.d.} suivant la loi de $X$ \end{center}
+On a donc une variance égale à 
+$Var[\bar{\delta}_n]=\frac{1}{2n}Var[h(X)](1+\rho)=\frac{1}{2}Var[\bar{\delta}_n](1+\rho)$ 
+On veut maintenant utiliser la Proposition 3.5 du cours.
+Ici par décroissance de $X \mapsto -X$, on voit facilement que $A$ est une transformation de $\mathbb{R}^3$ décroissante en chacune de ses coordonnées. 
+De plus, $h: \mathbb{R}^3\to\mathbb{R}$ est décroissante par décroissance de $X \mapsto e^{-X}$. 
+Ainsi, d'après la Proposition 3.5 du cours, on a $Cov(h(X),h(A(X)))\leq0$.
+D'où, $1+\rho\leq1$. On en déduit donc :
+$$Var[\widehat{\delta}_n]\leq\frac{1}{2}Var[\bar{\delta}_n]$$
+On s'intéresse maintenant au  facteur de réduction de variance théorique, noté $R_1$, de $\widehat{\delta}_n$ par rapport à $\bar{\delta}_n$.
+
+L'expression de $R_1$ est:
+$$R_1= R(\widehat{\delta}_n,\bar{\delta}_n)=\frac{C \sigma^2}{C_1 \sigma_1^2}=\frac{C}{C_1}\frac{2}{1+\rho}$$ 
+avec $\sigma^2=Var[\bar{\delta}_n], \sigma_1^2=Var[\widehat{\delta}_n]$
+et $C$ le coût de calcul de $\bar{\delta}_n$ et $C_1$ de $\widehat{\delta}_n$. 
+
+```{r}
+# On introduit la variable antithétique A= 2*mu - X
+a <- -x + 2 * mu
+
+
+q_a <- quantile(a)
+q_x <- quantile(x)
+qqplot(q_x, q_a)
+abline(a = 0, b = 1)
+
+
+hist(x, freq = F)
+hist(a, freq = F)
+
+# Calcul de l'estimateur
+h.a <- h(a, n)
+delta.ant <- mean(c(h.x, h.a))
+
+# Calcul de l'erreur quadratique moyenne
+rho <- cor(h.x, h.a)
+
+erreur.ant <- var.h * (1 + rho) / (2 * n)
+erreur.ant
+
+# Calcul du  facteur de réduction de variance théorique
+library(microbenchmark)
+test <- microbenchmark::microbenchmark(h(x, n), rmvnorm(n, mu, sigma), times = 1000)
+print(test)
+
+C_h <- mean(test$time[which(test$expr == "h(x, n)")])
+C_X <- mean(test$time[which(test$expr == "rmvnorm(n, mu, sigma)")])
+
+
+R1 <- 2 * (C_h + C_X) / ((C_X + 2 * C_h) * (1 + rho))
+R1
+
+```
+
+
+On conclut que $\widehat{\delta}_n$ est ... fois plus efficace que $\bar{\delta}_n$
+
+
+
+\textbf{4. (a)}  
+
+On choisit ici la loi génératrice des moments de loi mutivariée en $(-\frac{1}{3},-\frac{1}{3},-\frac{1}{3})$  
+On a $M_X(t)=e^{\mu^Tt+\frac{1}{2}t^T\Sigma t} = \mathbb{E}[e^{<t,X>}]$  
+Et $h_0(X)=e^{-\frac{1}{3} \sum_{i=1}^{n}X_i} = e^{<t,X>} = exp\{<\begin{pmatrix} 
+        -\frac{1}{3}\\ 
+        -\frac{1}{3} \\
+        -\frac{1}{3}
+      \end{pmatrix},\begin{pmatrix} 
+        X_1\\ 
+        X_2 \\
+        X_3
+      \end{pmatrix}>\}$  
+      
+D'où $m=\mathbb{E}[e^{<t,X>}]==e^{\mu^Tt+\frac{1}{2}t^T\Sigma t}$  
+On a $cor(h_0(X),h(X))$ très proche de 1. 
+On en déduit finalement 
+\begin{center} \fcolorbox{black}{white}{$\widehat{\delta}_n(b)= \frac{1}{n} \sum_{i=1}^{n}(h(X_i)-b(h_0(X_i)-m))$ }\end{center} 
+
+```{r}
+h0 <- function(x) {
+  return(exp(-colMeans(x)))
+}
+
+h0.x <- h0(x)
+
+rho.control <- cor(h0.x, h.x)
+rho.control
+
+t1 <- c(-1 / 3, -1 / 3, -1 / 3)
+m <- exp(t(mu) %*% t1 + 1 / 2 * t(t1) %*% sigma %*% t1) [1, 1]
+
+cov.h.h0 <- cov(h0.x, h.x)
+```
+
+
+\textbf{4. (b)}  
+ 
+Pour simuler $b$, on utilise la méthode de la \textit{burn-in period}.  Ainsi on utilise les $l$ premières estimations de la suite $(X_n)_{n\geq1}$ pour estimer $b^*$ via :
+
+$$\widehat{b^*}_l=\frac{\sum_{k=1}^{l}(h_0(X_k)-m)(h(X_k)-\bar{h}_l)}{\sum_{k=1}^{l}(h_0(X_k)-m)^2}$$
+
+On fait varier $l$ pour avoir l'estimateur qui nous donne la plus faible erreur quadratique. On trouve... 
+
+```{r}
+
+essai <- seq(from = 0, to = 1000, by = 1)
+err <- c()
+del <- c()
+b <- c()
+for (l in essai) {
+  h.x.l <- h.x[1:l]
+  h.x.nl <- h.x[l:n]
+
+  h0.x.l <- h0.x[1:l]
+  h0.x.nl <- h0.x[l:n]
+  bl <- sum((h0.x.l - m) * (h.x.l - mean(h.x.l))) / sum((h0.x.l - m) * (h0.x.l - m))
+
+  d <- mean(h.x.nl - bl * (h0.x.nl - m))
+
+  e <- var(h.x.nl) / (n - l) + (bl * bl * var(h0.x) - 2 * bl * cov(h.x.nl, h0.x.nl)) / (n - l)
+
+  err <- append(err, e) 
+  b <- append(b, bl)
+  del <- append(del, d)
+}
+plot(essai, err)
+lines(essai, err)
+
+w <- which(err == min(err))
+err[w]
+
+plot(essai, b)
+essai[w]
+
+b[w]
+
+del[w]
+```
+
+
+
+\newpage 
+
+
+\section*{\textbf{\underline{Solution Exercice 3.}}}
+
+\textbf{Travail préliminaire}
+
+On remarque très vite que la loi géometrique liée aux fonctions du langage R *pgeom(), dgeom(), qgeom()* et *rgeom()* avec prob = p suit la densité : 
+$$ p(x)= p(1-p)^x$$ pour $x=0, 1, 2,...$
+Alors que la loi géomètrique classique suit la densité :
+$$p(x) = p(1-p)^{x-1}$$ pour $x=1,2,3,...$
+
+
+On introduit des fonctions suivant cette loi géomètrique pour cet exercice :
+
+```{r}
+rgeom_modif <- function(n, p = 0.2) {
+  return(rgeom(n, p) + 1)
+}
+
+dgeom_modif <- function(n, p = 0.2) {
+  return(dgeom(n - 1, p))
+}
+
+pgeom_modif <- function(n, p = 0.2) {
+  return(pgeom(n - 1, p))
+}
+```
+\textbf{1.}
+```{r}
+n <- 10000
+
+m <- 2
+p <- 0.2
+theta <- 2
+```
+
+```{r}
+estim_MC <- function(n, p = 0.2) {
+  ans <- c()
+  y <- rgeom_modif(n, p)
+  for (i in 1:n) {
+    ans <- append(ans, sum(log(1 + rgamma(y[i], m, theta))))
+  }
+  return(list("delta" = mean(ans), "Var" = var(ans) / n, "Erreur" = var(ans) / n^2))
+}
+
+MC <- estim_MC(n)
+MC
+```
+
+\textbf{2. (a)}         
+ 	
+
+On cherche à estimer $\delta =\mathbb{E}[S]$ avec $S=\sum_{i=1}^{Y} \log(X_{i}+1)$ avec $(X_n)_{n\geq1}\textit{ i.i.d}$ suivant une loi $\Gamma(m,\theta)$
+	
+Dans cette question, on souhaite estimer $\delta$ à l'aide de la méthode de stratification avec L = 15 strates bien choisies.  
+	
+	
+\textbf{Choix des strates}
+	
+Il parait évident de choisir $Y$ comme variable de stratification.
+En effet, comme Y suit une loi $\mathcal{G}(p)$, Y est à valeur dans $\mathbb{N}^*$. Il faut donc créer 15 ensembles ${D}_{k}$ formant une partition de $\mathbb{N}^*$. 
+	
+Donc cela revient donc à estimer 
+\begin{center}$\mathbb{E}[S]=\sum_{k=1}^{L} \mathbb{P}(Y\in D_k) \mathbb{E}[S|Y\in D_k] $\end{center}
+	
+Pour $1\leq k\leq 14$, on choisit ${D}_{k}=\{k\}$. On a bien  $\mathbb{P}(Y\in D_k)=\mathbb{P}(Y = k) > 0$.
+	
+Pour $k=15$, on prend donc toutes les autres valeurs de $\mathbb{N}^*$ donc $\mathbb{N}^*$ $\textbackslash  \cup^{14}_{k=1}D_k =\{15,16,...\}$.
+On a bien  $\mathbb{P}(Y\in D_{15})=\mathbb{P}(Y \geq 15) > 0$.
+	
+
+Ainsi,
+	
+\begin{center}$\mathbb{E}[S]=\sum_{k=1}^{14} \mathbb{P}(Y = k) \mathbb{E}[S|Y = k] + \mathbb{P}(Y \geq 15) \mathbb{E}[S|Y	\geq 15]$\end{center}
+
+
+\textbf{Allocation proportionnelle}   
+	
+Nous voulons utiliser la méthode de stratification avec allocation proportionnelle, nous allons créer une suite de $({n}_{1},...,{n}_{L})$ représentant les cardinaux des  ${D}_{k}$.
+	
+Pour $1\leq k\leq 14$, on prend $n_{k}=n$ $\mathbb{P}(Y=k) = np(1-p)^{k-1}$ avec $p=0.2$.
+	
+Pour $k=15$, $n_{15}=n -\sum_{k=0}^{14} n_{k}$ 
+
+	 
+\textbf{Simulation selon $\mathcal{L}(S|Y\in \mathbf{D}_{k})$} 
+	 
+Nous voulons à présent simuler selon la loi $\mathcal{L}(S|Y\in \mathbf{D}_{k})$ pour $1\leq k\leq 15$.
+	
+Une nouvelle fois pour $1\leq k\leq 14$ cela est plutôt facile, il suffit de simuler de construire $n_{k}$ fois : 
+\begin{center} $S^{(k)}_i = \sum_{j=1}^k log(1+X_j) \forall i \in [1,n_k]$
+\; avec  $(X_n)_{n\geq1} \overset{iid}{\sim} \Gamma(m,\theta)$ \end{center}
+	
+Pour $k=15$, la tâche est plus compliquée on utilise alors la formule du cours :
+	
+Soit X une variable aléatoire réelle de fonction de répartition F. Pour $k = 1,...,L$, $D_k = ]d_k ,d_{k +1}]$ avec $d_k$ des constantes réelles.
+Si $U \sim \mathbf{U([0, 1])}$, alors
+$X_{(k)} = F^{\leftarrow} [F(d_k )+U (F(d_{k+1})-F(d_k))]$, k = 1,...,K suit la loi de $X$ | $X \in D_k$.
+		
+	
+Dans notre cas, $S^{(15)}_i= F^{\leftarrow}[F(15) + U (1- F(15))]$ suit la loi de $\mathcal{L}(S|Y\in \mathbf{D}_{15})$.
+	
+Enfin nous avons construit notre estimateur \begin{center} \fbox{$\hat\delta_{n}(n_{1},...,n_{L})= \sum_{i=1}^{L}\mathbb{P}(Y\in\mathbf{D}_{k}) \frac{1}{n_{k}} \sum_{j=1}^{n_{k}} S^{(k)}_j$ }\end{center}
+	
+	
+\textbf{2.(b)}  
+```{r}
+estim_Strat <- function(n,L=15,p=0.2) {
+  L <- 15
+  # Allocation proportionnelle
+  nk <- c()
+  pk <- dgeom_modif(1:(L - 1), p)
+  nk <- floor(n * pk)
+  pk <- append(pk, 1 - pgeom_modif(L, p))
+  nk <- append(nk, n - sum(nk))
+  estim <- c()
+  erreur <- c()
+  for (i in 1:(L - 1)) { # Simulation des Si(k)
+    sk <- replicate(nk[i], sum(log(1 + rgamma(i, theta, m))))
+    estim <- append(estim, pk[i] * mean(sk))
+    erreur <- append(erreur, pk[i] * var(sk))
+  }
+  U <- runif(nk[L])
+  P_Y15 <- pgeom_modif(L, p)
+  # Simulation de n15 Y suivant la loi (Y >= 15)
+  Y_cond <- qgeom(P_Y15 + (1 - P_Y15) * U, p)
+
+  sL <- c()
+  # Simulation de n15 Si(15)
+  for (i in Y_cond) {
+    sk <- sum(log(1 + rgamma(i, theta, m)))
+    sL <- append(sL, sk)
+  }
+  estim <- append(estim, pk[L] * mean(sL))
+  erreur <- append(erreur, pk[L] * var(sL))
+  sum(estim)
+  sum(erreur) / n
+  return(list("delta" = sum(estim), "Var" = sum(erreur) / n, "Erreur" = sum(erreur) / n^2))
+}
+
+Strat <- estim_Strat(n)
+Strat
+```
+Calcul du facteur de réduction de variance
+```{r}
+library(microbenchmark)
+test <- microbenchmark(estim_MC(n), estim_Strat(n))
+print(test)
+
+C_MC <- mean(test$time[which(test$expr == "estim_MC(n)")])
+C_Strat <- mean(test$time[which(test$expr == "estim_Strat(n)")])
+
+R <- (MC$Var * C_MC) / (C_Strat * Strat$Var)
+R
+```
+
